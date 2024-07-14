@@ -12,11 +12,6 @@ const ActorCards = ({ name, image, gender, country, birthday, deathday }) => {
       <p>{country ? `Comes from ${country}` : "No COuntry Found"}</p>
       {!!birthday && <p>Born {birthday}</p>}
       <p>{deathday ? `Died ${deathday}` : "Alive"}</p>
-
-      <div>
-        <Link to="/">Read more</Link>
-        <button type="button">Star</button>
-      </div>
     </div>
   );
 };
