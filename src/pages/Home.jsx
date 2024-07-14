@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { searchForShows } from "./../api/tvmaze";
 import { searchForPeople } from "./../api/tvmaze";
 import SearchForm from "../components/SearchForm";
+import ShowGrid from "../components/shows/ShowGrid";
+import ActorGrid from "../components/actors/ActorGrid";
 
 const Home = () => {
   const [apiData, setApiData] = useState(null);
@@ -32,11 +34,11 @@ const Home = () => {
         return <div>Not Found</div>;
       }
       // Check if the first item has a 'show' or 'person' property to determine the type
-      return apiData[0].show
-        ? apiData.map((data) => <div key={data.show.id}>{data.show.name}</div>)
-        : apiData.map((data) => (
-            <div key={data.person.id}>{data.person.name}</div>
-          ));
+      return apiData[0].show ? (
+        <ShowGrid shows={apiData} />
+      ) : (
+        <ActorGrid actors={apiData} />
+      );
     }
     return null;
   };
