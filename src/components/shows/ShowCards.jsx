@@ -1,18 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 const ShowCards = ({ name, image, id, summary }) => {
   const summaryStripped = summary
-    ? summary.split(" ").slice(0, 10).join(" ").replace(/<.+?>/g, "")
+    ? summary
+        .replace(/<[^>]+>/g, "")
+        .split(" ")
+        .slice(0, 10)
+        .join(" ")
     : "No description";
+
   return (
     <div>
       <div>
         <img src={image} alt={name} />
       </div>
       <h1>{name}</h1>
-      <p>{summaryStripped}</p>
+      <p>{summaryStripped}...</p>
       <div>
-        <Link to="/">Read more</Link>
+        <Link to={`/show/${id}`}>Read more</Link>
         <button type="button">Star</button>
       </div>
     </div>

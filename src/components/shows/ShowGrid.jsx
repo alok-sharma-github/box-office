@@ -7,6 +7,7 @@ const ShowGrid = ({ shows }) => {
       {shows.map((data) => (
         <ShowCards
           key={data.show.id}
+          id={data.show.id}
           name={data.show.name}
           image={
             data.show.image ? data.show.image.medium : "/not-found-image.png"
