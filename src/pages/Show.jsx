@@ -1,12 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getShowById } from "../api/tvmaze";
 import { useQuery } from "@tanstack/react-query";
 import ShowMainData from "../components/shows/ShowMainData";
 import Details from "../components/shows/Details";
 import Seasons from "../components/shows/Seasons";
 import Cast from "../components/shows/Cast";
-
+// import { useNavigate } from "react-router-dom";
 const Show = () => {
   const { showId } = useParams();
 
@@ -19,6 +19,11 @@ const Show = () => {
     queryFn: () => getShowById(showId),
   });
 
+  //   const navigateTo = useNavigate();
+  //   const onGoBack = () => {
+  //     navigateTo("/");
+  //   };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -30,6 +35,10 @@ const Show = () => {
   if (showData) {
     return (
       <div>
+        {/* <button type="button" onClick={onGoBack}>
+          Go back
+        </button> */}
+        <Link to="/">Go back</Link>
         <ShowMainData
           image={showData.image}
           name={showData.name}
