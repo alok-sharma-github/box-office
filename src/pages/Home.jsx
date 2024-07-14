@@ -1,39 +1,50 @@
 import React, { useState } from "react";
-import { searchForShows } from "./../api/tvmaze";
-import { searchForPeople } from "./../api/tvmaze";
+import { useQuery } from "@tanstack/react-query";
+import { searchForShows, searchForPeople } from "./../api/tvmaze";
 import SearchForm from "../components/SearchForm";
 import ShowGrid from "../components/shows/ShowGrid";
 import ActorGrid from "../components/actors/ActorGrid";
 
-const Home = () => {
-  const [apiData, setApiData] = useState(null);
-  const [apiDataError, setApiDataError] = useState(null);
+const fetchApiData = async ({ queryKey }) => {
+  const [_key, { q, searchOption }] = queryKey;
+  if (searchOption === "shows") {
+    return await searchForShows(q);
+  } else {
+    return await searchForPeople(q);
+  }
+};
 
-  const onSearch = async ({ q, searchOption }) => {
-    setApiDataError(null); // Reset error state before new search
-    setApiData(null); // Reset apiData state before new search
-    try {
-      if (searchOption === "shows") {
-        const result = await searchForShows(q);
-        setApiData(result);
-      } else {
-        const result = await searchForPeople(q);
-        setApiData(result);
-      }
-    } catch (err) {
-      setApiDataError(err.message);
-    }
+const Home = () => {
+  const [searchParams, setSearchParams] = useState({
+    q: "",
+    searchOption: "shows",
+  });
+
+  const {
+    data: apiData,
+    error: apiDataError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["search", searchParams],
+    queryFn: fetchApiData,
+    enabled: !!searchParams.q, // Only run the query if there is a search query
+  });
+
+  const onSearch = ({ q, searchOption }) => {
+    setSearchParams({ q, searchOption });
   };
 
   const renderApiData = () => {
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
     if (apiDataError) {
-      return <div>Error: {apiDataError}</div>;
+      return <div>Error: {apiDataError.message}</div>;
     }
     if (apiData) {
       if (apiData.length === 0) {
         return <div>Not Found</div>;
       }
-      // Check if the first item has a 'show' or 'person' property to determine the type
       return apiData[0].show ? (
         <ShowGrid shows={apiData} />
       ) : (
@@ -46,7 +57,6 @@ const Home = () => {
   return (
     <div>
       <SearchForm onSearch={onSearch} />
-
       <div>{renderApiData()}</div>
     </div>
   );
